@@ -1,6 +1,10 @@
 package com.example.demo.service
-import org.springframework.stereotype.Service
+
 import com.example.demo.repository.UserRepository
+import com.example.demo.model.AuthResponse
+import com.example.demo.model.User
+import com.example.demo.security.JwtUtil
+import org.springframework.stereotype.Service
 
 @Service
 class AuthService(
@@ -8,6 +12,8 @@ class AuthService(
     private val jwtUtil: JwtUtil
 ) {
     fun authenticate(email: String, password: String): AuthResponse {
+        println("Authenticating user: $email")
+        
         val user = userRepository.findByEmail(email)
             ?: throw RuntimeException("User not found")
 
@@ -15,6 +21,7 @@ class AuthService(
             throw RuntimeException("Invalid credentials")
 
         val token = jwtUtil.generateToken(user)
+        println("Authentication successful, token: $token")
         return AuthResponse(token)
     }
 }

@@ -1,12 +1,15 @@
+package com.example.demo.security
+
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.security.Keys
 import org.springframework.stereotype.Component
 import com.example.demo.model.User
 import java.util.Date
 
 @Component
 class JwtUtil {
-    private val secret = "secret-key" // Should be stored securely
+    private val secret = "3F7r9XpLWvNqTgYb2KzPcS8aDhEjRuVzWxYtApBoCrDsEvFuGxHzIjKlMnOpQrSt"
     private val expirationMs = 3600000 // 1 hour
 
     fun generateToken(user: User): String {
@@ -17,16 +20,19 @@ class JwtUtil {
             .setSubject(user.email)
             .setIssuedAt(now)
             .setExpiration(expiryDate)
-            .signWith(SignatureAlgorithm.HS512, secret)
+            .signWith(Keys.hmacShaKeyFor(secret.toByteArray()), SignatureAlgorithm.HS512)
             .compact()
     }
 
     fun validateToken(token: String): Boolean {
-        try {
-            val claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token)
-            return !claims.body.expiration.before(Date())
+        return try {
+            val claims = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(secret.toByteArray()))
+                .build()
+                .parseClaimsJws(token)
+            !claims.body.expiration.before(Date())
         } catch (e: Exception) {
-            return false
+            false
         }
     }
 }
