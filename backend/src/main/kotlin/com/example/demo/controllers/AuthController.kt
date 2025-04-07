@@ -22,13 +22,15 @@ data class LoginRequest(
 data class RegisterRequest(
     val username: String,
     val email: String,
-    val password: String
+    val password: String,
+    val firstName: String
 )
 
 data class AuthResponse(
     val token: String,
     val email: String,
-    val id: Long
+    val id: Long,
+    val firstName: String?=null
 )
 
 @RestController
@@ -53,7 +55,7 @@ class AuthController(
         
         val jwt = jwtUtil.generateToken(user)
         
-        return ResponseEntity.ok(AuthResponse(jwt, user.email, user.id))
+        return ResponseEntity.ok(AuthResponse(jwt, user.email, user.id, user.firstName))
     }
     
     @PostMapping("/register")
@@ -65,13 +67,14 @@ class AuthController(
         val user = User(
             username = registerRequest.username,
             email = registerRequest.email,
-            password = passwordEncoder.encode(registerRequest.password)
+            password = passwordEncoder.encode(registerRequest.password),
+            firstName = registerRequest.firstName
             // Add any other required fields from your User class here
         )
         
         val savedUser = userRepository.save(user)
         val jwt = jwtUtil.generateToken(savedUser)
         
-        return ResponseEntity.ok(AuthResponse(jwt, savedUser.email, savedUser.id))
+        return ResponseEntity.ok(AuthResponse(jwt, savedUser.email, savedUser.id, savedUser.firstName))
     }
 }
