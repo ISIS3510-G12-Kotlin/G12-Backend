@@ -17,20 +17,38 @@ java {
 
 repositories {
 	mavenCentral()
+	// Add the Datadog repository
+    maven {
+        url "https://dl.bintray.com/datadog/datadog-maven"
+    }
+    // JCenter (which is needed for some Datadog artifacts)
+    jcenter()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
 	implementation 'org.jetbrains.kotlin:kotlin-reflect'
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5") // or jjwt-gson
+
+	// Datadog dependencies
+    //implementation("com.datadoghq:dd-trace-api:1.18.0")
+    //implementation("com.datadoghq:dd-trace-ot:1.18.0")
+    //implementation("com.datadoghq:dd-java-agent:1.16.0")
+	//implementation("com.datadoghq:dd-trace-ext:1.18.0") //using Spring Boot
+	implementation("org.springframework.boot:spring-boot-starter-aop") // using aop for tracing
+	implementation 'com.timgroup:java-statsd-client:3.1.0'
+
+	
 }
 
 kotlin {
