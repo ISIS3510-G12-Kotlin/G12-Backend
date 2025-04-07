@@ -46,6 +46,7 @@ dependencies {
     //implementation("com.datadoghq:dd-java-agent:1.16.0")
 	//implementation("com.datadoghq:dd-trace-ext:1.18.0") //using Spring Boot
 	implementation("org.springframework.boot:spring-boot-starter-aop") // using aop for tracing
+	implementation 'com.timgroup:java-statsd-client:3.1.0'
 
 	
 }
