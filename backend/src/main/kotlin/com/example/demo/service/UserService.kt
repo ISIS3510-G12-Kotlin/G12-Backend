@@ -3,27 +3,39 @@ package com.example.demo.service
 import com.example.demo.model.User
 import com.example.demo.repository.UserRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
-class UserService(private val userRepository: UserRepository) {
-
-    fun getAllUsers(): List<User> = userRepository.findAll()
-
-    fun getUserById(id: Long): User? = userRepository.findById(id).orElse(null)
-
+class UserService(
+    private val userRepository: UserRepository
+) {
+    @Transactional
     fun createUser(user: User): User = userRepository.save(user)
 
-    fun saveUsers(users: List<User>): List<User> {
-        return userRepository.saveAll(users)
-    }
+    @Transactional(readOnly = true)
+    fun findByUsername(username: String): User? =
+        userRepository.findByUsername(username)
 
+    @Transactional(readOnly = true)
+    fun getAllUsers(): List<User> = userRepository.findAll()
+
+    @Transactional(readOnly = true)
+    fun getUserById(id: Long): User? = userRepository.findById(id).orElse(null)
+
+    @Transactional
+    fun saveUsers(users: List<User>): List<User> = userRepository.saveAll(users)
+
+    @Transactional
     fun updateUser(id: Long, updatedUser: User): User? {
-        val existingUser = userRepository.findById(id).orElse(null) ?: return null
-        val newUser = existingUser.copy(name = updatedUser.name, email = updatedUser.email, password = updatedUser.password,
-        role = updatedUser.role)
-        return userRepository.save(newUser)
+        return if (userRepository.existsById(id)) {
+            val user = updatedUser.copy(id = id)
+            userRepository.save(user)
+        } else {
+            null
+        }
     }
 
+    @Transactional
     fun deleteUser(id: Long): Boolean {
         return if (userRepository.existsById(id)) {
             userRepository.deleteById(id)

@@ -1,0 +1,107 @@
+package com.example.demo.aspect
+
+import io.opentracing.Tracer
+import io.opentracing.tag.Tags
+import org.aspectj.lang.ProceedingJoinPoint
+import org.aspectj.lang.annotation.Around
+import org.aspectj.lang.annotation.Aspect
+import org.aspectj.lang.annotation.Pointcut
+import org.aspectj.lang.reflect.MethodSignature
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.context.request.ServletRequestAttributes
+import java.util.*
+
+@Aspect
+@Component
+class DatadogTracingAspect @Autowired constructor(
+    private val tracer: Tracer
+) {
+
+    @Pointcut("execution(* com.example.demo.controllers.*.*(..))")
+    fun controllerMethods() {}
+
+    @Pointcut("execution(* com.example.demo.service.*.*(..))")
+    fun serviceMethods() {}
+
+    @Pointcut("execution(* com.example.demo.repository.*.*(..))")
+    fun repositoryMethods() {}
+
+    @Around("controllerMethods()")
+    fun traceControllerMethods(joinPoint: ProceedingJoinPoint): Any? {
+        return traceMethod(joinPoint, "controller")
+    }
+
+    @Around("serviceMethods()")
+    fun traceServiceMethods(joinPoint: ProceedingJoinPoint): Any? {
+        return traceMethod(joinPoint, "service")
+    }
+
+    @Around("repositoryMethods()")
+    fun traceRepositoryMethods(joinPoint: ProceedingJoinPoint): Any? {
+        return traceMethod(joinPoint, "repository")
+    }
+
+    private fun traceMethod(joinPoint: ProceedingJoinPoint, layerName: String): Any? {
+        val methodSignature = joinPoint.signature as MethodSignature
+        val className = methodSignature.declaringType.simpleName
+        val methodName = methodSignature.name
+
+        val operationName = "$className.$methodName"
+        val spanBuilder = tracer.buildSpan(operationName)
+            .withTag("layer", layerName)
+            .withTag("class", className)
+            .withTag("method", methodName)
+
+        // Add HTTP request details for controllers
+        if (layerName == "controller") {
+            try {
+                val requestAttributes = RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?
+                requestAttributes?.request?.let { request ->
+                    spanBuilder
+                        .withTag(Tags.HTTP_METHOD, request.method)
+                        .withTag(Tags.HTTP_URL, request.requestURL.toString())
+                }
+            } catch (e: Exception) {
+                // Ignore if not in HTTP context
+            }
+        }
+
+        // Start the span
+        val span = spanBuilder.start()
+        
+        return try {
+            // Add method arguments as tags
+            val parameterNames = methodSignature.parameterNames
+            val args = joinPoint.args
+            for (i in parameterNames.indices) {
+                if (args[i] != null && isPrimitiveOrString(args[i])) {
+                    span.setTag("arg.${parameterNames[i]}", args[i].toString())
+                }
+            }
+            
+            // Execute the method
+            val result = joinPoint.proceed()
+            
+            // Mark successful completion
+            span.setTag("outcome", "SUCCESS")
+            
+            result
+        } catch (e: Exception) {
+            // Log error
+            span.setTag(Tags.ERROR, true)
+            span.setTag("error.message", e.message ?: "Unknown error")
+            span.setTag("error.type", e.javaClass.name)
+            span.setTag("outcome", "ERROR")
+            
+            throw e
+        } finally {
+            span.finish()
+        }
+    }
+    
+    private fun isPrimitiveOrString(obj: Any): Boolean {
+        return obj is String || obj is Number || obj is Boolean || obj is Char
+    }
+}

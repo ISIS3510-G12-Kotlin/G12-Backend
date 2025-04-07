@@ -1,0 +1,42 @@
+package com.example.demo.config
+
+import io.opentracing.util.GlobalTracer
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import datadog.opentracing.DDTracer
+import datadog.trace.api.sampling.PrioritySampling
+import org.slf4j.LoggerFactory
+import javax.annotation.PostConstruct
+
+@Configuration
+class DatadogConfig {
+
+    private val logger = LoggerFactory.getLogger(DatadogConfig::class.java)
+
+    @Value("\${dd.service.name:g12-backend}")
+    private lateinit var serviceName: String
+
+    @Value("\${dd.trace.enabled:true}")
+    private var traceEnabled: Boolean = true
+
+    @PostConstruct
+    fun init() {
+        logger.info("Initializing Datadog configuration with service name: {}", serviceName)
+    }
+
+    @Bean
+    fun ddTracer(): DDTracer {
+        val tracer = DDTracer.builder()
+            .serviceName(serviceName)
+            .samplingPriority(PrioritySampling.SAMPLER_KEEP)
+            .build()
+
+        if (traceEnabled && !GlobalTracer.isRegistered()) {
+            GlobalTracer.register(tracer)
+            logger.info("Datadog tracer registered successfully")
+        }
+
+        return tracer
+    }
+}
