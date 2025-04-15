@@ -23,14 +23,13 @@ data class RegisterRequest(
     val username: String,
     val email: String,
     val password: String,
-    val firstName: String
+    val firstName: String?,
+    val lastName: String?
 )
 
 data class AuthResponse(
     val token: String,
-    val email: String,
-    val id: Long,
-    val firstName: String?=null
+    val user: User? = null
 )
 
 @RestController
@@ -44,18 +43,28 @@ class AuthController(
     
     @PostMapping("/login")
     fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<AuthResponse> {
-        val authentication = authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(loginRequest.email, loginRequest.password)
-        )
-        
-        SecurityContextHolder.getContext().authentication = authentication
-        
-        val user = userRepository.findByEmail(loginRequest.email)
-            ?: throw RuntimeException("User not found")
-        
-        val jwt = jwtUtil.generateToken(user)
-        
-        return ResponseEntity.ok(AuthResponse(jwt, user.email, user.id, user.firstName))
+        try {
+            val authentication = authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken(loginRequest.email, loginRequest.password)
+            )
+            
+            SecurityContextHolder.getContext().authentication = authentication
+            
+            val user = userRepository.findByEmail(loginRequest.email)
+                ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
+            
+            // Crear versión sin password para la respuesta
+            val userView = user.copy(password = null)
+            
+            val jwt = jwtUtil.generateToken(user)
+            
+            return ResponseEntity.ok(AuthResponse(token = jwt, user = userView))
+        } catch (e: BadCredentialsException) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+        }
     }
     
     @PostMapping("/register")
@@ -68,13 +77,18 @@ class AuthController(
             username = registerRequest.username,
             email = registerRequest.email,
             password = passwordEncoder.encode(registerRequest.password),
-            firstName = registerRequest.firstName
-            // Add any other required fields from your User class here
+            firstName = registerRequest.firstName,
+            lastName = registerRequest.lastName
         )
         
         val savedUser = userRepository.save(user)
+        
+        // Crear un "user view" sin contraseña para la respuesta
+        val userView = savedUser.copy(password = null)
+        
         val jwt = jwtUtil.generateToken(savedUser)
         
-        return ResponseEntity.ok(AuthResponse(jwt, savedUser.email, savedUser.id, savedUser.firstName))
+        // Devolver el token y el usuario sin datos sensibles
+        return ResponseEntity.ok(AuthResponse(token = jwt, user = userView))
     }
 }
