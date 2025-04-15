@@ -25,6 +25,9 @@ data class User(
     @Column(name = "last_name", nullable = true)
     val lastName: String? = null,
     
+    @Column(name = "profile_image_url", nullable = true)
+    val profileImageUrl: String? = null,
+    
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
     
