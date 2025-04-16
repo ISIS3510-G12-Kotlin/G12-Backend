@@ -1,7 +1,7 @@
 package com.example.demo.model
 
-import jakarta.persistence.*
-import java.time.LocalDateTime
+import com.fasterxml.jackson.annotation.JsonIgnore
+import javax.persistence.*
 
 @Entity
 @Table(name = "users")
@@ -10,30 +10,21 @@ data class User(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
     
-    @Column(nullable = false, unique = true)
-    val username: String,
+    val username: String = "",
+    val email: String = "",
     
-    @Column(nullable = false)
-    val email: String,
+    // JsonIgnore para no enviar la contraseña en las respuestas
+    @JsonIgnore
+    val password: String? = null,
     
-    @Column(nullable = false)
-    val password: String,
-    
-    @Column(name = "first_name", nullable = true)
     val firstName: String? = null,
-    
-    @Column(name = "last_name", nullable = true)
     val lastName: String? = null,
     
-    @Column(name = "profile_image_url", nullable = true)
     val profileImageUrl: String? = null,
     
-    @Column(name = "created_at", nullable = false)
-    val createdAt: LocalDateTime = LocalDateTime.now(),
-    
-    @Column(name = "updated_at", nullable = false)
-    val updatedAt: LocalDateTime = LocalDateTime.now(),
-    
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    val favoriteBuildings: MutableList<UserFavoriteBuilding> = mutableListOf()
-)
+    val createdAt: String? = null,
+    val updatedAt: String? = null
+) {
+    // Constructor por defecto necesario para JPA
+    constructor() : this(0, "", "", null)
+}
