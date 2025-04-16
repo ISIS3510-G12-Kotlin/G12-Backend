@@ -44,7 +44,10 @@ class UserController(private val userService: UserService) {
     @PutMapping("/{id}")
     fun updateUser(@PathVariable id: Long, @RequestBody updatedUser: User): ResponseEntity<User> {
         val user = userService.updateUser(id, updatedUser)
-        return if (user != null) ResponseEntity.ok(user)
+        return if (user != null) {
+            val userWithoutPassword = user.copy(password = "")
+            ResponseEntity.ok(userWithoutPassword)
+        }
         else ResponseEntity.notFound().build()
     }
 
