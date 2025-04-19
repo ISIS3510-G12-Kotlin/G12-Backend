@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Service
 class AuthService(
@@ -28,7 +29,8 @@ class AuthService(
 
         // Generate token
         val token = jwtUtil.generateToken(user)
-        return AuthResponse(token)
+        // Return token AND user in the response
+        return AuthResponse(token, user, "Login successful")
     }
 
     @Transactional
@@ -39,10 +41,12 @@ class AuthService(
         }
 
         // Encode the password before saving
+        val now = LocalDateTime.now()
+        val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
         val encodedUser = user.copy(
             password = passwordEncoder.encode(user.password),
-            createdAt = LocalDateTime.now(),
-            updatedAt = LocalDateTime.now()
+            createdAt = now.format(dateFormatter), 
+            updatedAt = now.format(dateFormatter)
         )
 
         // Save the user
@@ -50,7 +54,8 @@ class AuthService(
 
         // Generate token
         val token = jwtUtil.generateToken(savedUser)
-        return AuthResponse(token)
+        // Return token AND user in the response
+        return AuthResponse(token, savedUser, "Registration successful")
     }
 
     @Transactional(readOnly = true)

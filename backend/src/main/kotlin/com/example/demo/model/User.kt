@@ -1,7 +1,7 @@
 package com.example.demo.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import javax.persistence.*
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "users")

@@ -44,13 +44,15 @@ class AuthController(
     private val passwordEncoder: PasswordEncoder,
     private val jwtUtil: JwtUtil
 ) {
-    
     @PostMapping("/login")
-    fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<AuthResponse> {
+    fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<Map<String, Any?>> {
         try {
             val user = userRepository.findByEmail(loginRequest.email)
                 ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(AuthResponse(token = "", message = "Usuario no encontrado"))
+                    .body(mapOf(
+                        "token" to "",
+                        "message" to "Usuario no encontrado"
+                    ))
             
             val authentication = authenticationManager.authenticate(
                 UsernamePasswordAuthenticationToken(loginRequest.email, loginRequest.password)
@@ -58,46 +60,95 @@ class AuthController(
             
             SecurityContextHolder.getContext().authentication = authentication
             
-            // Crear versión sin password para la respuesta
-            val userView = user.copy(password = "")
-            
             val jwt = jwtUtil.generateToken(user)
             
-            // Devolver AuthResponse con el objeto user anidado
-            return ResponseEntity.ok(AuthResponse(token = jwt, user = userView))
+            // Create a sanitized user view for the response
+            // This ensures we don't include sensitive data like password
+            val userForResponse = mapOf(
+                "id" to user.id,
+                "username" to user.username,
+                "email" to user.email,
+                "firstName" to user.firstName,
+                "lastName" to user.lastName,
+                "profileImageUrl" to user.profileImageUrl,
+                "createdAt" to user.createdAt,
+                "updatedAt" to user.updatedAt
+            )
+            
+            // Return both individual fields and full user data
+            return ResponseEntity.ok(
+                mapOf(
+                    "token" to jwt,
+                    "id" to user.id,
+                    "email" to user.email,
+                    "username" to user.username,
+                    "firstName" to user.firstName,
+                    "lastName" to user.lastName,
+                    "userData" to userForResponse,  // Use a different key name to avoid conflicts
+                    "message" to "Login successful"
+                )
+            )
         } catch (e: Exception) {
             e.printStackTrace()
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(AuthResponse(token = "", message = "Error de autenticación: ${e.message}"))
+                .body(mapOf(
+                    "token" to "",
+                    "message" to "Error de autenticación: ${e.message}"
+                ))
         }
     }
-        @PostMapping("/register")
-        fun register(@RequestBody registerRequest: RegisterRequest): ResponseEntity<AuthResponse> {
-            if (userRepository.existsByEmail(registerRequest.email)) {
-                return ResponseEntity.badRequest().body(
-                    AuthResponse(token = "", message = "Email already in use")
-                )
-            }
-            
-            val user = User(
-                username = registerRequest.username,
-                email = registerRequest.email,
-                password = passwordEncoder.encode(registerRequest.password),
-                firstName = registerRequest.firstName,
-                lastName = registerRequest.lastName
-            )
-            
-            val savedUser = userRepository.save(user)
-            
-            // Crear un "user view" sin contraseña para la respuesta
-            val userView = savedUser.copy(password = null)
-            
-            val jwt = jwtUtil.generateToken(savedUser)
-            
-            // Devolver el token y el usuario sin datos sensibles
-            return ResponseEntity.ok(AuthResponse(token = jwt, user = userView))
-        }
     
+    @PostMapping("/register")
+    fun register(@RequestBody registerRequest: RegisterRequest): ResponseEntity<Map<String, Any?>> {
+        if (userRepository.existsByEmail(registerRequest.email)) {
+            return ResponseEntity.badRequest().body(
+                mapOf(
+                    "token" to "",
+                    "message" to "Email already in use"
+                )
+            )
+        }
+        
+        // Create a new user from the request
+        val newUser = User(
+            username = registerRequest.username,
+            email = registerRequest.email,
+            password = passwordEncoder.encode(registerRequest.password),
+            firstName = registerRequest.firstName,
+            lastName = registerRequest.lastName
+        )
+        
+        // Save the user
+        val savedUser = userRepository.save(newUser)
+        
+        // Generate JWT
+        val jwt = jwtUtil.generateToken(savedUser)
+        
+        // Create a sanitized user view for the response
+        val userForResponse = mapOf(
+            "id" to savedUser.id,
+            "username" to savedUser.username,
+            "email" to savedUser.email,
+            "firstName" to savedUser.firstName,
+            "lastName" to savedUser.lastName,
+            "profileImageUrl" to savedUser.profileImageUrl,
+            "createdAt" to savedUser.createdAt,
+            "updatedAt" to savedUser.updatedAt
+        )
+        
+        return ResponseEntity.ok(
+            mapOf(
+                "token" to jwt,
+                "id" to savedUser.id,
+                "email" to savedUser.email,
+                "username" to savedUser.username,
+                "firstName" to savedUser.firstName,
+                "lastName" to savedUser.lastName,
+                "userData" to userForResponse,  // Use a different key name
+                "message" to "Registration successful"
+            )
+        )
+    }
     
     // Endpoint de diagnóstico para verificar credenciales directamente
     @PostMapping("/test-auth")
