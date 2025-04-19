@@ -25,22 +25,32 @@ data class Building(
     @Column(nullable = false)
     var longitude: Double,
 
-    @Column(nullable = true)
+    @Column(name = "image_url", nullable = true)
     var imageUrl: String? = null,
+    
+    @Column(nullable = false)
+    var category: String = "Buildings",
 
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
 
     @Column(name = "updated_at", nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now(),
-
+    
     @OneToMany(mappedBy = "building", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    var floors: MutableList<Floor> = mutableListOf(),
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "campus_id")
-    var campus: Campus? = null,
+    var places: MutableList<Place> = mutableListOf(),
 
     @OneToMany(mappedBy = "building", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     var userFavorites: MutableList<UserFavoriteBuilding> = mutableListOf()
+)
+
+// DTO for converting from Supabase format
+data class LocationDTO(
+    val location_id: Long,
+    val name: String,
+    val description: String?,
+    val image_url: String?,
+    val category: String,
+    val latitude: Double,
+    val longitude: Double
 )

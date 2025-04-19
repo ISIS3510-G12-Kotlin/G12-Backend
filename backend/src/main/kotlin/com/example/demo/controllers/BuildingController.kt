@@ -1,8 +1,7 @@
 package com.example.demo.controllers
 
 import com.example.demo.model.Building
-import com.example.demo.model.Floor
-import com.example.demo.model.Room
+import com.example.demo.model.Place
 import com.example.demo.service.BuildingService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -35,10 +34,21 @@ class BuildingController(private val buildingService: BuildingService) {
         val buildings = buildingService.searchBuildings(query)
         return ResponseEntity.ok(buildings)
     }
-
-    @GetMapping("/campus/{campusId}")
-    fun findBuildingsByCampus(@PathVariable campusId: Long): ResponseEntity<List<Building>> {
-        val buildings = buildingService.findBuildingsByCampus(campusId)
+    
+    @GetMapping("/category/{category}")
+    fun findBuildingsByCategory(@PathVariable category: String): ResponseEntity<List<Building>> {
+        val buildings = buildingService.findBuildingsByCategory(category)
+        return ResponseEntity.ok(buildings)
+    }
+    
+    @GetMapping("/nearby")
+    fun findNearbyBuildings(
+        @RequestParam userLat: Double,
+        @RequestParam userLon: Double,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<List<Building>> {
+        val buildings = buildingService.findBuildingsOrderedByDistance(userLat, userLon, page, size)
         return ResponseEntity.ok(buildings)
     }
 
@@ -62,40 +72,19 @@ class BuildingController(private val buildingService: BuildingService) {
         buildingService.deleteBuilding(id)
         return ResponseEntity.noContent().build()
     }
-
-    @GetMapping("/{buildingId}/floors")
-    fun getFloorsByBuildingId(@PathVariable buildingId: Long): ResponseEntity<List<Floor>> {
-        val floors = buildingService.getFloorsByBuildingId(buildingId)
-        return ResponseEntity.ok(floors)
+    
+    @GetMapping("/{buildingId}/places")
+    fun getPlacesByBuildingId(@PathVariable buildingId: Long): ResponseEntity<List<Place>> {
+        val places = buildingService.getPlacesByBuildingId(buildingId)
+        return ResponseEntity.ok(places)
     }
-
-    @PostMapping("/{buildingId}/floors")
-    fun addFloorToBuilding(
+    
+    @PostMapping("/{buildingId}/places")
+    fun addPlaceToBuilding(
         @PathVariable buildingId: Long, 
-        @RequestBody floor: Floor
-    ): ResponseEntity<Floor> {
-        val createdFloor = buildingService.addFloorToBuilding(buildingId, floor)
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdFloor)
-    }
-
-    @GetMapping("/floors/{floorId}/rooms")
-    fun getRoomsByFloorId(@PathVariable floorId: Long): ResponseEntity<List<Room>> {
-        val rooms = buildingService.getRoomsByFloorId(floorId)
-        return ResponseEntity.ok(rooms)
-    }
-
-    @GetMapping("/{buildingId}/rooms")
-    fun getRoomsByBuildingId(@PathVariable buildingId: Long): ResponseEntity<List<Room>> {
-        val rooms = buildingService.getRoomsByBuildingId(buildingId)
-        return ResponseEntity.ok(rooms)
-    }
-
-    @PostMapping("/floors/{floorId}/rooms")
-    fun addRoomToFloor(
-        @PathVariable floorId: Long, 
-        @RequestBody room: Room
-    ): ResponseEntity<Room> {
-        val createdRoom = buildingService.addRoomToFloor(floorId, room)
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdRoom)
+        @RequestBody place: Place
+    ): ResponseEntity<Place> {
+        val createdPlace = buildingService.addPlaceToBuilding(buildingId, place)
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdPlace)
     }
 }

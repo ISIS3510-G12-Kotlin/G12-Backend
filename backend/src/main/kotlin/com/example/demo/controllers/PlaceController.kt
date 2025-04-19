@@ -33,6 +33,12 @@ class PlaceController(private val placeService: PlaceService) {
         val places = placeService.getPlacesByCategory(category)
         return ResponseEntity.ok(places)
     }
+    
+    @GetMapping("/floor/{floorCode}")
+    fun getPlacesByFloor(@PathVariable floorCode: String): ResponseEntity<List<Place>> {
+        val places = placeService.getPlacesByFloor(floorCode)
+        return ResponseEntity.ok(places)
+    }
 
     @GetMapping("/search")
     fun searchPlaces(@RequestParam query: String): ResponseEntity<List<Place>> {

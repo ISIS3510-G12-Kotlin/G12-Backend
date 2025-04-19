@@ -13,14 +13,14 @@ data class Place(
     @Column(nullable = false)
     var name: String,
 
-    @Column(nullable = false)
-    var code: String,
-
-    @Column(nullable = false)
-    var category: String,
+    @Column(nullable = true)
+    var code: String? = null,
 
     @Column(nullable = true)
-    var distance: String? = null,
+    var category: String? = null,
+
+    @Column(nullable = true)
+    var floor: String? = null,
 
     @Column(nullable = true)
     var coordinates: String? = null,
@@ -37,4 +37,13 @@ data class Place(
 
     @Column(name = "updated_at", nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now()
+)
+
+// DTO for converting from Supabase format
+data class PlaceDTO(
+    val id: Long,
+    val id_location: Long,
+    val name: String,
+    val url_image: String?,
+    val floor: String?
 )

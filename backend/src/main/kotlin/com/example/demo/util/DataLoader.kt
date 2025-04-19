@@ -2,12 +2,14 @@ package com.example.demo.util
 
 import com.example.demo.model.*
 import com.example.demo.repository.*
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.password.PasswordEncoder
-
+import org.springframework.core.io.ClassPathResource
 import java.time.LocalDateTime
 
 /**
@@ -18,14 +20,12 @@ import java.time.LocalDateTime
 @Configuration
 @Profile("init-data")
 class DataLoader(
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val objectMapper: ObjectMapper
 ) {
     @Bean
     fun initDatabase(
         buildingRepository: BuildingRepository,
-        campusRepository: CampusRepository,
-        floorRepository: FloorRepository,
-        roomRepository: RoomRepository,
         placeRepository: PlaceRepository,
         userRepository: UserRepository
     ): CommandLineRunner {
@@ -34,207 +34,59 @@ class DataLoader(
             if (buildingRepository.count() == 0L) {
                 println("Initializing database with sample data...")
                 
-                // Create campus
-                val mainCampus = Campus(
-                    name = "Main Campus",
-                    description = "The main university campus located in the city center"
-                )
+                // Load buildings from locations.json
+                val locationsJson = ClassPathResource("data/locations.json").inputStream.readBytes().toString(Charsets.UTF_8)
+                val locations: List<LocationDTO> = objectMapper.readValue(locationsJson)
                 
-                val northCampus = Campus(
-                    name = "North Campus",
-                    description = "The northern extension of the university"
-                )
-                
-                campusRepository.saveAll(listOf(mainCampus, northCampus))
-                println("Campus data loaded.")
-                
-                // Create buildings
-                val marioLaserna = Building(
-                    name = "Mario Laserna",
-                    code = "ML",
-                    description = "Engineering Building with classrooms and labs for engineering students",
-                    latitude = 4.602442,
-                    longitude = -74.065952,
-                    imageUrl = "https://example.com/images/ml.jpg",
-                    campus = mainCampus
-                )
-                
-                val wBuilding = Building(
-                    name = "W Building",
-                    code = "W",
-                    description = "Science and admin building with labs and offices",
-                    latitude = 4.603018,
-                    longitude = -74.066217,
-                    imageUrl = "https://example.com/images/w.jpg",
-                    campus = mainCampus
-                )
-                
-                val santoDomingo = Building(
-                    name = "Santo Domingo",
-                    code = "SD",
-                    description = "Main library and study center",
-                    latitude = 4.602780,
-                    longitude = -74.065553,
-                    imageUrl = "https://example.com/images/sd.jpg",
-                    campus = mainCampus
-                )
-                
-                val sportsCenter = Building(
-                    name = "Sports Center",
-                    code = "Z",
-                    description = "Sports facilities and gym",
-                    latitude = 4.601982,
-                    longitude = -74.064964,
-                    imageUrl = "https://example.com/images/z.jpg",
-                    campus = northCampus
-                )
-                
-                buildingRepository.saveAll(listOf(marioLaserna, wBuilding, santoDomingo, sportsCenter))
-                println("Buildings data loaded.")
-                
-                // Create floors for Mario Laserna
-                val mlFloor1 = Floor(
-                    number = 1,
-                    name = "Ground Floor",
-                    description = "Main entrance and labs",
-                    building = marioLaserna
-                )
-                
-                val mlFloor2 = Floor(
-                    number = 2,
-                    name = "Second Floor",
-                    description = "Classrooms and offices",
-                    building = marioLaserna
-                )
-                
-                floorRepository.saveAll(listOf(mlFloor1, mlFloor2))
-                
-                // Create rooms for ML floors
-                val mlRoom1 = Room(
-                    name = "Computer Lab 1",
-                    number = "ML-101",
-                    type = "Laboratory",
-                    capacity = 50,
-                    description = "Computer lab with 50 workstations",
-                    floor = mlFloor1
-                )
-                
-                val mlRoom2 = Room(
-                    name = "Lecture Hall",
-                    number = "ML-102",
-                    type = "Classroom",
-                    capacity = 120,
-                    description = "Large lecture hall with projector",
-                    floor = mlFloor1
-                )
-                
-                val mlRoom3 = Room(
-                    name = "Meeting Room",
-                    number = "ML-201",
-                    type = "Meeting",
-                    capacity = 15,
-                    description = "Small meeting room",
-                    floor = mlFloor2
-                )
-                
-                roomRepository.saveAll(listOf(mlRoom1, mlRoom2, mlRoom3))
-                println("Floors and rooms data loaded.")
-                
-                // Create places
-                val places = listOf(
-                    // Mario Laserna places
-                    Place(
-                        name = "Computer Lab 1",
-                        code = "ML-101",
-                        category = "Laboratory",
-                        distance = "1st Floor",
-                        coordinates = "4.602442,-74.065952",
-                        imageUrl = "https://example.com/images/lab1.jpg",
-                        building = marioLaserna
-                    ),
-                    Place(
-                        name = "Auditorium",
-                        code = "ML-AUD",
-                        category = "Classroom",
-                        distance = "2nd Floor",
-                        coordinates = "4.602442,-74.065952",
-                        imageUrl = "https://example.com/images/ml_aud.jpg",
-                        building = marioLaserna
-                    ),
-                    Place(
-                        name = "Cafeteria",
-                        code = "ML-CAF",
-                        category = "Food",
-                        distance = "Ground Floor",
-                        coordinates = "4.602442,-74.065952",
-                        imageUrl = "https://example.com/images/ml_cafe.jpg",
-                        building = marioLaserna
-                    ),
-                    
-                    // W Building places
-                    Place(
-                        name = "Chemistry Lab",
-                        code = "W-201",
-                        category = "Laboratory",
-                        distance = "2nd Floor",
-                        coordinates = "4.603018,-74.066217",
-                        imageUrl = "https://example.com/images/w_chem.jpg",
-                        building = wBuilding
-                    ),
-                    Place(
-                        name = "Physics Lab",
-                        code = "W-301",
-                        category = "Laboratory",
-                        distance = "3rd Floor",
-                        coordinates = "4.603018,-74.066217",
-                        imageUrl = "https://example.com/images/w_phys.jpg",
-                        building = wBuilding
-                    ),
-                    
-                    // Santo Domingo places
-                    Place(
-                        name = "Main Reading Room",
-                        code = "SD-1",
-                        category = "Study Area",
-                        distance = "1st Floor",
-                        coordinates = "4.602780,-74.065553",
-                        imageUrl = "https://example.com/images/sd_reading.jpg",
-                        building = santoDomingo
-                    ),
-                    Place(
-                        name = "Computer Zone",
-                        code = "SD-2",
-                        category = "Study Area",
-                        distance = "2nd Floor",
-                        coordinates = "4.602780,-74.065553",
-                        imageUrl = "https://example.com/images/sd_computers.jpg",
-                        building = santoDomingo
-                    ),
-                    
-                    // Sports Center places
-                    Place(
-                        name = "Swimming Pool",
-                        code = "Z-POOL",
-                        category = "Sports",
-                        distance = "Ground Floor",
-                        coordinates = "4.601982,-74.064964",
-                        imageUrl = "https://example.com/images/z_pool.jpg",
-                        building = sportsCenter
-                    ),
-                    Place(
-                        name = "Gym",
-                        code = "Z-GYM",
-                        category = "Sports",
-                        distance = "1st Floor",
-                        coordinates = "4.601982,-74.064964",
-                        imageUrl = "https://example.com/images/z_gym.jpg",
-                        building = sportsCenter
+                // Convert LocationDTOs to Buildings
+                val buildingsMap = mutableMapOf<Long, Building>()
+                val buildings = locations.map { locationDTO ->
+                    val building = Building(
+                        name = locationDTO.name,
+                        code = locationDTO.name.substring(0, 1) + locationDTO.name.substring(locationDTO.name.indexOf(" ") + 1), // e.g., "Bloque ML" -> "BML"
+                        description = locationDTO.description ?: "",
+                        latitude = locationDTO.latitude,
+                        longitude = locationDTO.longitude,
+                        imageUrl = locationDTO.image_url,
+                        category = locationDTO.category
                     )
-                )
+                    buildingsMap[locationDTO.location_id] = building
+                    building
+                }
+                
+                buildingRepository.saveAll(buildings)
+                println("Buildings data loaded from Supabase format.")
+                
+                // Load places from places.json
+                val placesJson = ClassPathResource("data/places.json").inputStream.readBytes().toString(Charsets.UTF_8)
+                val placeDTOs: List<PlaceDTO> = objectMapper.readValue(placesJson)
+                
+                // Convert PlaceDTOs to Places
+                val places = placeDTOs.mapNotNull { placeDTO ->
+                    val building = buildingsMap[placeDTO.id_location] ?: return@mapNotNull null
+                    
+                    Place(
+                        name = placeDTO.name,
+                        code = building.code + "-" + placeDTO.floor?.replace("_", ""),
+                        category = when {
+                            placeDTO.name.contains("Puente") -> "Connection"
+                            placeDTO.name.contains("Lab") -> "Laboratory"
+                            placeDTO.name.contains("Cancha") || placeDTO.name.contains("Piscina") -> "Sports"
+                            placeDTO.name.contains("Terraza") -> "Common Area"
+                            placeDTO.name.contains("Sala") -> "Study Area"
+                            else -> "Other"
+                        },
+                        floor = placeDTO.floor,
+                        coordinates = "${building.latitude},${building.longitude}",
+                        imageUrl = placeDTO.url_image,
+                        building = building
+                    )
+                }
                 
                 placeRepository.saveAll(places)
-                println("Places data loaded.")
+                println("Places data loaded from Supabase format.")
                 
+                // Create sample users
                 val users = listOf(
                     User(
                         username = "admin",

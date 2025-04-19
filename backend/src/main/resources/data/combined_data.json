@@ -1,0 +1,202 @@
+{
+  "1": {
+    "location_id": 1,
+    "name": "Bloque ML",
+    "latitude": 4.602196,
+    "longitude": -74.065816,
+    "description": "Edificio Mario Laserna",
+    "image_url": "https://cdvdebibeggycjaeypck.supabase.co/storage/v1/object/public/avatars//MLBuilding.png",
+    "category": "Buildings",
+    "places": [
+      {
+        "id": 1,
+        "id_location": 1,
+        "name": "Waira",
+        "url_image": "https://cdvdebibeggycjaeypck.supabase.co/storage/v1/object/public/avatars//waira.jpg",
+        "floor": "ML_604"
+      },
+      {
+        "id": 2,
+        "id_location": 1,
+        "name": "Colivri",
+        "url_image": "https://cdvdebibeggycjaeypck.supabase.co/storage/v1/object/public/avatars//colivri.png",
+        "floor": "ML_001"
+      },
+      {
+        "id": 4,
+        "id_location": 1,
+        "name": "Puente hacia W",
+        "url_image": "https://cdvdebibeggycjaeypck.supabase.co/storage/v1/object/public/avatars//puente_w.jpg",
+        "floor": "ML_5"
+      }
+    ]
+  },
+  "3": {
+    "location_id": 3,
+    "name": "Bloque SD",
+    "latitude": 4.8798,
+    "longitude": -74.065816,
+    "description": "Edificio Julio Mario Santo Domingo",
+    "image_url": "https://escuelaastroestadistica.uniandes.edu.co/images/sd.jpg",
+    "category": "Buildings",
+    "places": [
+      {
+        "id": 5,
+        "id_location": 3,
+        "name": "Sala de exposicion",
+        "url_image": "https://sostenibilidad.uniandes.edu.co/images/Programa/Cultura-y-aprendizaje.jpg",
+        "floor": "SD_1"
+      },
+      {
+        "id": 6,
+        "id_location": 3,
+        "name": "Terraza SD",
+        "url_image": "https://images.adsttc.com/media/images/5741/1a06/e58e/ce6e/c900/00c0/newsletter/Rodrigo_Davila_terrace_garden.jpg?1463884283",
+        "floor": "SD_10"
+      }
+    ]
+  },
+  "6": {
+    "location_id": 6,
+    "name": "Bloque B",
+    "latitude": 4.8798,
+    "longitude": -74.065816,
+    "description": "",
+    "image_url": "https://www.bermudezarquitectos.com/wp-content/uploads/2018/07/ANDESB-F06-EG-PLACA.jpg",
+    "category": "Buildings",
+    "places": []
+  },
+  "5": {
+    "location_id": 5,
+    "name": "Bloque Au",
+    "latitude": 4.8798,
+    "longitude": -74.065816,
+    "description": "Edificio Aulas",
+    "image_url": "https://confucio.uniandes.edu.co/sites/default/files/imagenes/2.%20El%20Instituto/4.%20Instalaciones/Banner-menu-instalaciones.jpg",
+    "category": "Buildings",
+    "places": [
+      {
+        "id": 9,
+        "id_location": 5,
+        "name": "Centro de Emprendimiento",
+        "url_image": "https://www.uniandes.edu.co/sites/default/files/styles/2_1_large/public/news2/espacio-de-innovacion-y-transferencia-n-_0.jpg?itok=CDgpk9NM",
+        "floor": "AU_1"
+      }
+    ]
+  },
+  "2": {
+    "location_id": 2,
+    "name": "Bloque W",
+    "latitude": 4.6005,
+    "longitude": -74.0648,
+    "description": "",
+    "image_url": "https://cdvdebibeggycjaeypck.supabase.co/storage/v1/object/public/avatars//WBuilding.jpg",
+    "category": "Buildings",
+    "places": [
+      {
+        "id": 3,
+        "id_location": 2,
+        "name": "Puente hacia ML",
+        "url_image": "https://cdvdebibeggycjaeypck.supabase.co/storage/v1/object/public/avatars//puente_w.jpg",
+        "floor": "W_5"
+      }
+    ]
+  },
+  "23": {
+    "location_id": 23,
+    "name": "Bloque Ga",
+    "latitude": 4.601637,
+    "longitude": -74.065315,
+    "description": "Edificio Ga",
+    "image_url": "https://campusinfo.uniandes.edu.co/images/stories/campus/Recursos_fisicos/ga.jpg",
+    "category": "Buildings",
+    "places": [
+      {
+        "id": 10,
+        "id_location": 23,
+        "name": "Cancha tennis",
+        "url_image": "https://servicios.uniandes.edu.co/wp-content/uploads/2023/06/practice1.jpg",
+        "floor": "Ga_5"
+      },
+      {
+        "id": 11,
+        "id_location": 23,
+        "name": "Cancha multipropositos",
+        "url_image": "https://servicios.uniandes.edu.co/wp-content/uploads/elementor/thumbs/practice5-qmisdcrc1tw5jvoph5ncg0gh3tvmmjb6c4qbqswsyg.jpg",
+        "floor": "Ga_4"
+      },
+      {
+        "id": 12,
+        "id_location": 23,
+        "name": "Piscina",
+        "url_image": "https://i.pinimg.com/736x/42/2c/64/422c64c5f746d8a73c6fb92fd163c68e.jpg",
+        "floor": "Ga_5"
+      }
+    ]
+  },
+  "24": {
+    "location_id": 24,
+    "name": "Bloque J",
+    "latitude": 4.6018,
+    "longitude": -74.0649,
+    "description": "Edificio J",
+    "image_url": "https://campusinfo.uniandes.edu.co/images/stories/campus/Recursos_fisicos/j.jpg",
+    "category": "Buildings",
+    "places": []
+  },
+  "25": {
+    "location_id": 25,
+    "name": "Bloque Ll",
+    "latitude": 4.6022,
+    "longitude": -74.065,
+    "description": "Edificio Ll",
+    "image_url": "https://campusinfo.uniandes.edu.co/images/stories/campus/Recursos_fisicos/ll.jpg",
+    "category": "Buildings",
+    "places": []
+  },
+  "26": {
+    "location_id": 26,
+    "name": "Bloque O",
+    "latitude": 4.602,
+    "longitude": -74.0652,
+    "description": "Edificio O",
+    "image_url": "https://campusinfo.uniandes.edu.co/images/stories/campus/Recursos_fisicos/o.jpg",
+    "category": "Buildings",
+    "places": []
+  },
+  "27": {
+    "location_id": 27,
+    "name": "Bloque Rga",
+    "latitude": 4.6019,
+    "longitude": -74.0648,
+    "description": "Edificio Rga",
+    "image_url": "https://campusinfo.uniandes.edu.co/images/stories/campus/Recursos_fisicos/rga.jpg",
+    "category": "Buildings",
+    "places": []
+  },
+  "4": {
+    "location_id": 4,
+    "name": "Bloque C",
+    "latitude": 4.8798,
+    "longitude": -74.065816,
+    "description": "Edificio C ",
+    "image_url": "https://arqdis.b-cdn.net/wp-content/uploads/2021/09/fachadas-sur-y-oriental-enrique-guzman.jpg",
+    "category": "Buildings",
+    "places": [
+      {
+        "id": 7,
+        "id_location": 4,
+        "name": "Terraza C",
+        "url_image": "https://arqdis.b-cdn.net/wp-content/uploads/2021/02/bloque-c-galeria-13-800x534.jpg",
+        "floor": "C_7"
+      },
+      {
+        "id": 8,
+        "id_location": 4,
+        "name": "Media Lab",
+        "url_image": "https://arqdis.b-cdn.net/wp-content/uploads/2019/07/Media-Lab-Enero-2024-025-510x339.jpg",
+        "floor": "C_201"
+      }
+    ]
+  }
+}

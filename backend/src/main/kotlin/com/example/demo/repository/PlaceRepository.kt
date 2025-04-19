@@ -12,6 +12,8 @@ interface PlaceRepository : JpaRepository<Place, Long> {
     
     fun findByCategory(category: String): List<Place>
     
+    fun findByFloorContaining(floorCode: String): List<Place>
+    
     @Query("SELECT p FROM Place p WHERE " +
            "LOWER(p.name) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
            "LOWER(p.code) LIKE LOWER(CONCAT('%', :query, '%'))")

@@ -1,92 +1,85 @@
 package com.example.demo.service
 
 import com.example.demo.model.Building
-import com.example.demo.model.Floor
-import com.example.demo.model.Room
+import com.example.demo.model.Place
 import com.example.demo.repository.BuildingRepository
-import com.example.demo.repository.FloorRepository
-import com.example.demo.repository.RoomRepository
+import com.example.demo.repository.PlaceRepository
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
+import jakarta.persistence.EntityNotFoundException
 
 @Service
 class BuildingService(
     private val buildingRepository: BuildingRepository,
-    private val floorRepository: FloorRepository,
-    private val roomRepository: RoomRepository
+    private val placeRepository: PlaceRepository
 ) {
-    @Transactional(readOnly = true)
-    fun findAllBuildings(): List<Building> = buildingRepository.findAll()
 
-    @Transactional(readOnly = true)
-    fun findBuildingById(id: Long): Building = 
-        buildingRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Building not found with id: $id") }
+    fun findAllBuildings(): List<Building> {
+        return buildingRepository.findAll()
+    }
 
-    @Transactional(readOnly = true)
-    fun findBuildingByCode(code: String): Building = 
-        buildingRepository.findByCode(code)
-            .orElseThrow { NoSuchElementException("Building not found with code: $code") }
+    fun findBuildingById(id: Long): Building {
+        return buildingRepository.findById(id)
+            .orElseThrow { EntityNotFoundException("Building not found with id: $id") }
+    }
 
-    @Transactional(readOnly = true)
-    fun searchBuildings(query: String): List<Building> = 
-        buildingRepository.searchBuildings(query)
+    fun findBuildingByCode(code: String): Building {
+        return buildingRepository.findByCode(code)
+            .orElseThrow { EntityNotFoundException("Building not found with code: $code") }
+    }
 
-    @Transactional(readOnly = true)
-    fun findBuildingsByCampus(campusId: Long): List<Building> = 
-        buildingRepository.findByCampusId(campusId)
+    fun searchBuildings(query: String): List<Building> {
+        return buildingRepository.searchBuildings(query)
+    }
+    
+    fun findBuildingsByCategory(category: String): List<Building> {
+        return buildingRepository.findByCategory(category)
+    }
+    
+    fun findBuildingsOrderedByDistance(userLat: Double, userLon: Double, page: Int, size: Int): List<Building> {
+        val pageable = PageRequest.of(page, size)
+        return buildingRepository.findAllOrderedByDistance(userLat, userLon, pageable)
+    }
 
     @Transactional
-    fun createBuilding(building: Building): Building = 
-        buildingRepository.save(building)
+    fun createBuilding(building: Building): Building {
+        return buildingRepository.save(building)
+    }
 
     @Transactional
-    fun updateBuilding(id: Long, building: Building): Building {
-        val existingBuilding = findBuildingById(id)
-        existingBuilding.name = building.name
-        existingBuilding.code = building.code
-        existingBuilding.description = building.description
-        existingBuilding.latitude = building.latitude
-        existingBuilding.longitude = building.longitude
-        existingBuilding.imageUrl = building.imageUrl
-        existingBuilding.campus = building.campus
+    fun updateBuilding(id: Long, buildingDetails: Building): Building {
+        val building = findBuildingById(id)
         
-        return buildingRepository.save(existingBuilding)
+        building.name = buildingDetails.name
+        building.code = buildingDetails.code
+        building.description = buildingDetails.description
+        building.latitude = buildingDetails.latitude
+        building.longitude = buildingDetails.longitude
+        building.imageUrl = buildingDetails.imageUrl
+        building.category = buildingDetails.category
+        building.updatedAt = LocalDateTime.now()
+        
+        return buildingRepository.save(building)
     }
 
     @Transactional
     fun deleteBuilding(id: Long) {
-        if (buildingRepository.existsById(id)) {
-            buildingRepository.deleteById(id)
-        } else {
-            throw NoSuchElementException("Building not found with id: $id")
+        if (!buildingRepository.existsById(id)) {
+            throw EntityNotFoundException("Building not found with id: $id")
         }
+        buildingRepository.deleteById(id)
     }
-
-    @Transactional(readOnly = true)
-    fun getFloorsByBuildingId(buildingId: Long): List<Floor> = 
-        floorRepository.findByBuildingIdOrderByNumberAsc(buildingId)
-
+    
+    fun getPlacesByBuildingId(buildingId: Long): List<Place> {
+        return placeRepository.findByBuildingId(buildingId)
+    }
+    
     @Transactional
-    fun addFloorToBuilding(buildingId: Long, floor: Floor): Floor {
+    fun addPlaceToBuilding(buildingId: Long, place: Place): Place {
         val building = findBuildingById(buildingId)
-        floor.building = building
-        return floorRepository.save(floor)
-    }
-
-    @Transactional(readOnly = true)
-    fun getRoomsByFloorId(floorId: Long): List<Room> = 
-        roomRepository.findByFloorId(floorId)
-
-    @Transactional(readOnly = true)
-    fun getRoomsByBuildingId(buildingId: Long): List<Room> = 
-        roomRepository.findByBuildingId(buildingId)
-
-    @Transactional
-    fun addRoomToFloor(floorId: Long, room: Room): Room {
-        val floor = floorRepository.findById(floorId)
-            .orElseThrow { NoSuchElementException("Floor not found with id: $floorId") }
-        room.floor = floor
-        return roomRepository.save(room)
+        place.building = building
+        return placeRepository.save(place)
     }
 }

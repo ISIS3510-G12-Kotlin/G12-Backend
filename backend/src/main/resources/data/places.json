@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "id_location": 1,
+    "name": "Waira",
+    "url_image": "https://cdvdebibeggycjaeypck.supabase.co/storage/v1/object/public/avatars//waira.jpg",
+    "floor": "ML_604"
+  },
+  {
+    "id": 2,
+    "id_location": 1,
+    "name": "Colivri",
+    "url_image": "https://cdvdebibeggycjaeypck.supabase.co/storage/v1/object/public/avatars//colivri.png",
+    "floor": "ML_001"
+  },
+  {
+    "id": 3,
+    "id_location": 2,
+    "name": "Puente hacia ML",
+    "url_image": "https://cdvdebibeggycjaeypck.supabase.co/storage/v1/object/public/avatars//puente_w.jpg",
+    "floor": "W_5"
+  },
+  {
+    "id": 4,
+    "id_location": 1,
+    "name": "Puente hacia W",
+    "url_image": "https://cdvdebibeggycjaeypck.supabase.co/storage/v1/object/public/avatars//puente_w.jpg",
+    "floor": "ML_5"
+  },
+  {
+    "id": 5,
+    "id_location": 3,
+    "name": "Sala de exposicion",
+    "url_image": "https://sostenibilidad.uniandes.edu.co/images/Programa/Cultura-y-aprendizaje.jpg",
+    "floor": "SD_1"
+  },
+  {
+    "id": 6,
+    "id_location": 3,
+    "name": "Terraza SD",
+    "url_image": "https://images.adsttc.com/media/images/5741/1a06/e58e/ce6e/c900/00c0/newsletter/Rodrigo_Davila_terrace_garden.jpg?1463884283",
+    "floor": "SD_10"
+  },
+  {
+    "id": 7,
+    "id_location": 4,
+    "name": "Terraza C",
+    "url_image": "https://arqdis.b-cdn.net/wp-content/uploads/2021/02/bloque-c-galeria-13-800x534.jpg",
+    "floor": "C_7"
+  },
+  {
+    "id": 8,
+    "id_location": 4,
+    "name": "Media Lab",
+    "url_image": "https://arqdis.b-cdn.net/wp-content/uploads/2019/07/Media-Lab-Enero-2024-025-510x339.jpg",
+    "floor": "C_201"
+  },
+  {
+    "id": 9,
+    "id_location": 5,
+    "name": "Centro de Emprendimiento",
+    "url_image": "https://www.uniandes.edu.co/sites/default/files/styles/2_1_large/public/news2/espacio-de-innovacion-y-transferencia-n-_0.jpg?itok=CDgpk9NM",
+    "floor": "AU_1"
+  },
+  {
+    "id": 10,
+    "id_location": 23,
+    "name": "Cancha tennis",
+    "url_image": "https://servicios.uniandes.edu.co/wp-content/uploads/2023/06/practice1.jpg",
+    "floor": "Ga_5"
+  },
+  {
+    "id": 11,
+    "id_location": 23,
+    "name": "Cancha multipropositos",
+    "url_image": "https://servicios.uniandes.edu.co/wp-content/uploads/elementor/thumbs/practice5-qmisdcrc1tw5jvoph5ncg0gh3tvmmjb6c4qbqswsyg.jpg",
+    "floor": "Ga_4"
+  },
+  {
+    "id": 12,
+    "id_location": 23,
+    "name": "Piscina",
+    "url_image": "https://i.pinimg.com/736x/42/2c/64/422c64c5f746d8a73c6fb92fd163c68e.jpg",
+    "floor": "Ga_5"
+  }
+]

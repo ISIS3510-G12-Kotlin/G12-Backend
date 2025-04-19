@@ -1,0 +1,101 @@
+[
+  {
+    "location_id": 1,
+    "name": "Bloque ML",
+    "latitude": 4.602196,
+    "longitude": -74.065816,
+    "description": "Edificio Mario Laserna",
+    "image_url": "https://cdvdebibeggycjaeypck.supabase.co/storage/v1/object/public/avatars//MLBuilding.png",
+    "category": "Buildings"
+  },
+  {
+    "location_id": 3,
+    "name": "Bloque SD",
+    "latitude": 4.8798,
+    "longitude": -74.065816,
+    "description": "Edificio Julio Mario Santo Domingo",
+    "image_url": "https://escuelaastroestadistica.uniandes.edu.co/images/sd.jpg",
+    "category": "Buildings"
+  },
+  {
+    "location_id": 6,
+    "name": "Bloque B",
+    "latitude": 4.8798,
+    "longitude": -74.065816,
+    "description": "",
+    "image_url": "https://www.bermudezarquitectos.com/wp-content/uploads/2018/07/ANDESB-F06-EG-PLACA.jpg",
+    "category": "Buildings"
+  },
+  {
+    "location_id": 5,
+    "name": "Bloque Au",
+    "latitude": 4.8798,
+    "longitude": -74.065816,
+    "description": "Edificio Aulas",
+    "image_url": "https://confucio.uniandes.edu.co/sites/default/files/imagenes/2.%20El%20Instituto/4.%20Instalaciones/Banner-menu-instalaciones.jpg",
+    "category": "Buildings"
+  },
+  {
+    "location_id": 2,
+    "name": "Bloque W",
+    "latitude": 4.6005,
+    "longitude": -74.0648,
+    "description": "",
+    "image_url": "https://cdvdebibeggycjaeypck.supabase.co/storage/v1/object/public/avatars//WBuilding.jpg",
+    "category": "Buildings"
+  },
+  {
+    "location_id": 23,
+    "name": "Bloque Ga",
+    "latitude": 4.601637,
+    "longitude": -74.065315,
+    "description": "Edificio Ga",
+    "image_url": "https://campusinfo.uniandes.edu.co/images/stories/campus/Recursos_fisicos/ga.jpg",
+    "category": "Buildings"
+  },
+  {
+    "location_id": 24,
+    "name": "Bloque J",
+    "latitude": 4.6018,
+    "longitude": -74.0649,
+    "description": "Edificio J",
+    "image_url": "https://campusinfo.uniandes.edu.co/images/stories/campus/Recursos_fisicos/j.jpg",
+    "category": "Buildings"
+  },
+  {
+    "location_id": 25,
+    "name": "Bloque Ll",
+    "latitude": 4.6022,
+    "longitude": -74.065,
+    "description": "Edificio Ll",
+    "image_url": "https://campusinfo.uniandes.edu.co/images/stories/campus/Recursos_fisicos/ll.jpg",
+    "category": "Buildings"
+  },
+  {
+    "location_id": 26,
+    "name": "Bloque O",
+    "latitude": 4.602,
+    "longitude": -74.0652,
+    "description": "Edificio O",
+    "image_url": "https://campusinfo.uniandes.edu.co/images/stories/campus/Recursos_fisicos/o.jpg",
+    "category": "Buildings"
+  },
+  {
+    "location_id": 27,
+    "name": "Bloque Rga",
+    "latitude": 4.6019,
+    "longitude": -74.0648,
+    "description": "Edificio Rga",
+    "image_url": "https://campusinfo.uniandes.edu.co/images/stories/campus/Recursos_fisicos/rga.jpg",
+    "category": "Buildings"
+  },
+  {
+    "location_id": 4,
+    "name": "Bloque C",
+    "latitude": 4.8798,
+    "longitude": -74.065816,
+    "description": "Edificio C ",
+    "image_url": "https://arqdis.b-cdn.net/wp-content/uploads/2021/09/fachadas-sur-y-oriental-enrique-guzman.jpg",
+    "category": "Buildings"
+  }
+]
