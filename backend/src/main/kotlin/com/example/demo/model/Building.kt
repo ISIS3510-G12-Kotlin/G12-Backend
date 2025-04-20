@@ -2,9 +2,12 @@ package com.example.demo.model
 
 import jakarta.persistence.*
 import java.time.LocalDateTime
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonManagedReference
 
 @Entity
 @Table(name = "buildings")
+@JsonIgnoreProperties("userFavorites")
 data class Building(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,9 +41,11 @@ data class Building(
     var updatedAt: LocalDateTime = LocalDateTime.now(),
     
     @OneToMany(mappedBy = "building", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @JsonManagedReference
     var places: MutableList<Place> = mutableListOf(),
 
     @OneToMany(mappedBy = "building", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @JsonIgnoreProperties
     var userFavorites: MutableList<UserFavoriteBuilding> = mutableListOf()
 )
 

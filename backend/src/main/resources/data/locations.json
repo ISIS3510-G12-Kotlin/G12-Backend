@@ -97,5 +97,23 @@
     "description": "Edificio C ",
     "image_url": "https://arqdis.b-cdn.net/wp-content/uploads/2021/09/fachadas-sur-y-oriental-enrique-guzman.jpg",
     "category": "Buildings"
+  },
+  {
+    "location_id": 27,
+    "name": "El Peaje",
+    "latitude": 4.602614,
+    "longitude": -74.067072,
+    "description": "Restaurante El Peaje",
+    "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSU7LO96Gnpo2ixbYBV36YQcPXps0TymfGDgQ&s",
+    "category": "Food"
+  },
+  {
+    "location_id": 28,
+    "name": "Copyalina",
+    "latitude": 4.603464,
+    "longitude": -74.0653354,
+    "description": "Fotocopiadora Copyalina",
+    "image_url": "https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=T9FKJ4xUnvg7p5LFdJPzjw&cb_client=search.gws-prod.gps&w=408&h=240&yaw=345.4088&pitch=0&thumbfov=100",
+    "category": "Services"
   }
 ]

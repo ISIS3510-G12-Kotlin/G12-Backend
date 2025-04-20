@@ -163,6 +163,38 @@ class DataLoader(
                 userRepository.saveAll(users)
                 println("Users data loaded.")
 
+                // Load events from events.json
+                if (eventRepository.count() == 0L) {
+                    try {
+                        val eventsJson = ClassPathResource("data/events.json").inputStream.readBytes().toString(Charsets.UTF_8)
+                        val eventDTOs: List<EventDTO> = objectMapper.readValue(eventsJson)
+                        
+                        // Convert EventDTOs to Events
+                        val events = eventDTOs.map { eventDTO ->
+                            val building = eventDTO.location_id?.let { buildingsMap[it] }
+                            
+                            Event(
+                                id = 0, // Let JPA assign IDs
+                                title = eventDTO.title,
+                                description = eventDTO.description ?: "",
+                                imageUrl = eventDTO.image_url,
+                                type = eventDTO.type ?: "event",
+                                startTime = LocalDateTime.parse(eventDTO.start_time),
+                                endTime = LocalDateTime.parse(eventDTO.end_time),
+                                location = building,
+                                createdAt = LocalDateTime.parse(eventDTO.created_at),
+                                updatedAt = LocalDateTime.now()
+                            )
+                        }
+                        
+                        eventRepository.saveAll(events)
+                        println("Events data loaded.")
+                    } catch (e: Exception) {
+                        println("Error loading events data: ${e.message}")
+                        e.printStackTrace()
+                    }
+                }
+
                 println("Sample data initialization complete!")
             } else {
                 println("Database already contains data, skipping initialization.")
