@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
+import com.example.demo.dto.response.EventDTO
+
 
 @Service
 class EventService(
@@ -78,30 +80,31 @@ class EventService(
     
     // Helper method to load events data from JSON
     @Transactional
-    fun loadEventsFromDTO(eventDTOs: List<com.example.demo.model.EventDTO>): List<Event> {
+    fun loadEventsFromDTO(eventDTOs: List<EventDTO>): List<Event> {
         val events = eventDTOs.map { dto ->
             val event = Event(
-                id = 0, // Let JPA assign IDs
+                id = dto.id,
                 title = dto.title,
                 description = dto.description,
-                imageUrl = dto.image_url,
+                imageUrl = dto.imageUrl,
                 type = dto.type,
-                startTime = LocalDateTime.parse(dto.start_time),
-                endTime = LocalDateTime.parse(dto.end_time),
+                startTime = LocalDateTime.parse(dto.startTime),
+                endTime = LocalDateTime.parse(dto.endTime),
                 location = null,
-                createdAt = LocalDateTime.parse(dto.created_at),
+                createdAt = LocalDateTime.now(), // O usa dto.createdAt si lo agregas
                 updatedAt = LocalDateTime.now()
             )
-            
-            // Associate with building if location_id is present
-            dto.location_id?.let { locationId ->
+
+            // Asociar con building si hay locationId
+            dto.locationId?.let { locationId ->
                 val building = buildingRepository.findByIdOrNull(locationId)
                 event.location = building
             }
-            
+
             event
         }
-        
+
         return eventRepository.saveAll(events)
     }
+
 }

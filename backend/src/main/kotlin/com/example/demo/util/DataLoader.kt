@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.core.io.ClassPathResource
 import java.time.LocalDateTime
+import com.example.demo.dto.response.EventDTO
+
 
 /**
  * This class loads initial data into the database when the application starts.
@@ -27,7 +29,8 @@ class DataLoader(
     fun initDatabase(
         buildingRepository: BuildingRepository,
         placeRepository: PlaceRepository,
-        userRepository: UserRepository
+        userRepository: UserRepository,
+        eventRepository: EventRepository
     ): CommandLineRunner {
         return CommandLineRunner {
             // Only load data if the database is empty
@@ -170,23 +173,25 @@ class DataLoader(
                         val eventDTOs: List<EventDTO> = objectMapper.readValue(eventsJson)
                         
                         // Convert EventDTOs to Events
+                        // Convert EventDTOs to Events
                         val events = eventDTOs.map { eventDTO ->
-                            val building = eventDTO.location_id?.let { buildingsMap[it] }
-                            
+                            val building = eventDTO.locationId?.let { buildingsMap[it] }
+
                             Event(
-                                id = 0, // Let JPA assign IDs
+                                id = 0,
                                 title = eventDTO.title,
                                 description = eventDTO.description ?: "",
-                                imageUrl = eventDTO.image_url,
+                                imageUrl = eventDTO.imageUrl,
                                 type = eventDTO.type ?: "event",
-                                startTime = LocalDateTime.parse(eventDTO.start_time),
-                                endTime = LocalDateTime.parse(eventDTO.end_time),
+                                startTime = LocalDateTime.parse(eventDTO.startTime),
+                                endTime = LocalDateTime.parse(eventDTO.endTime),
                                 location = building,
-                                createdAt = LocalDateTime.parse(eventDTO.created_at),
+                                createdAt = LocalDateTime.now(),
                                 updatedAt = LocalDateTime.now()
                             )
                         }
-                        
+
+
                         eventRepository.saveAll(events)
                         println("Events data loaded.")
                     } catch (e: Exception) {

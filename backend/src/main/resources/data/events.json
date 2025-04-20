@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Festival Musical",
+    "description": "Concierto de bienvenida en la plazoleta.",
+    "imageUrl": "https://example.com/festival.jpg",
+    "type": "event",
+    "startTime": "2025-04-30T18:00:00",
+    "endTime": "2025-04-30T20:00:00",
+    "locationId": 1
+  },
+  {
+    "title": "Charla sobre IA",
+    "description": "Invitado de Google compartiendo experiencias.",
+    "imageUrl": "https://example.com/ai.jpg",
+    "type": "talk",
+    "startTime": "2025-04-22T10:00:00",
+    "endTime": "2025-04-22T11:00:00",
+    "locationId": 2
+  }
+]
