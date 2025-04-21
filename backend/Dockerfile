@@ -1,36 +1,21 @@
-FROM openjdk:21-slim as build
+FROM openjdk:21-jdk-slim
 
 WORKDIR /app
 
-# Copy Gradle files
-COPY gradlew .
-COPY gradle gradle
-COPY build.gradle .
-COPY settings.gradle .
+# Copy the Datadog Java agent
+COPY dd-java-agent.jar /dd-java-agent.jar
 
-# Make gradlew executable
-RUN chmod +x ./gradlew
+# Copy the executable JAR file
+COPY build/libs/demo-0.0.1-SNAPSHOT.jar app.jar
 
-# Copy source code
-COPY src src
+# Set environment variables for Datadog
+ENV DD_AGENT_HOST=datadog-agent
+ENV DD_TRACE_AGENT_URL=http://datadog-agent:8126
+ENV DD_ENV=development
+ENV DD_SERVICE=explorandes-backend
+ENV DD_VERSION=1.0.0
+ENV DD_LOGS_INJECTION=true
+ENV DD_PROFILING_ENABLED=true
 
-# Build the application but skip tests
-RUN ./gradlew build -x test
-
-FROM openjdk:21-slim
-
-WORKDIR /app
-
-# Copy the built jar from the build stage
-COPY --from=build /app/build/libs/*.jar app.jar
-
-# Create directory for uploads
-RUN mkdir -p uploads/profile-images
-
-# Expose the application port
-EXPOSE 8080
-
-# Run the application with the init-data profile
-ENTRYPOINT ["java", \
-            "-Dspring.profiles.active=init-data", \
-            "-jar", "/app/app.jar"]
+# Run with the Datadog agent
+ENTRYPOINT ["java", "-javaagent:/dd-java-agent.jar", "-jar", "app.jar"]
