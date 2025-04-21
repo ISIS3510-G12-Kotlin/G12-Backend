@@ -24,17 +24,13 @@ WORKDIR /app
 # Copy the built jar from the build stage
 COPY --from=build /app/build/libs/*.jar app.jar
 
-# Download the Datadog agent jar
-ADD https://dtdg.co/latest-java-tracer /app/dd-java-agent.jar
+# Create directory for uploads
+RUN mkdir -p uploads/profile-images
 
 # Expose the application port
 EXPOSE 8080
 
-# Run the application with datadog agent
+# Run the application with the init-data profile
 ENTRYPOINT ["java", \
-            "-javaagent:/app/dd-java-agent.jar", \
-            "-Ddd.service.name=g12-backend", \
-            "-Ddd.profiling.enabled=true", \
-            "-Ddd.logs.injection=true", \
-            "-Ddd.trace.sample.rate=1", \
+            "-Dspring.profiles.active=init-data", \
             "-jar", "/app/app.jar"]
