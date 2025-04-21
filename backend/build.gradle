@@ -17,44 +17,81 @@ java {
 
 repositories {
 	mavenCentral()
-	// Add the Datadog repository
-    maven {
-        url "https://dl.bintray.com/datadog/datadog-maven"
-    }
-    // JCenter (which is needed for some Datadog artifacts)
-    jcenter()
+	
+	// Add the Datadog Maven repository
+	maven {
+		url "https://repository.sonatype.org/content/repositories/central-proxy/"
+	}
+	
+	// Maven Central as a backup
+	maven {
+		url "https://repo.maven.apache.org/maven2/"
+	}
 }
 
 dependencies {
+	// Spring Boot dependencies
 	implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-security")
-	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
-	implementation 'org.jetbrains.kotlin:kotlin-reflect'
-	runtimeOnly 'org.postgresql:postgresql'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation("org.springframework.security:spring-security-test")
-	testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
-
+	implementation("org.springframework.boot:spring-boot-starter-aop")
+	
+	// Kotlin dependencies
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	
+	// Database
+	runtimeOnly("org.postgresql:postgresql")
+	
+	// JWT Authentication
+	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+	
 	// Datadog dependencies
-    //implementation("com.datadoghq:dd-trace-api:1.18.0")
-    //implementation("com.datadoghq:dd-trace-ot:1.18.0")
-    //implementation("com.datadoghq:dd-java-agent:1.16.0")
-	//implementation("com.datadoghq:dd-trace-ext:1.18.0") //using Spring Boot
-	implementation("org.springframework.boot:spring-boot-starter-aop") // using aop for tracing
-	implementation 'com.timgroup:java-statsd-client:3.1.0'
+	// Note: dd-java-agent should be added as a javaagent at runtime, not as a regular dependency
+	implementation("com.datadoghq:dd-trace-api:1.18.3")
+	implementation("com.datadoghq:dd-trace-ot:1.18.3")
+	implementation("io.opentracing:opentracing-api:0.33.0")
+	implementation("io.opentracing:opentracing-util:0.33.0")
+	
+	// Datadog metrics via StatsD
+	implementation("com.datadoghq:java-dogstatsd-client:4.2.0")
+	
+	// Logback for structured logging to Datadog
+	implementation("net.logstash.logback:logstash-logback-encoder:7.4")
+	
+	// Micrometer for metrics (integrates with Spring Boot Actuator)
+	implementation("io.micrometer:micrometer-registry-datadog:1.12.4")
+	implementation ("io.micrometer:micrometer-registry-statsd")
 
 	
+	// AspectJ for method tracing
+	implementation("org.aspectj:aspectjrt:1.9.21")
+	implementation("org.aspectj:aspectjweaver:1.9.21")
+	
+	// Test dependencies
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+	// Servlet API for Jakarta
+    implementation("jakarta.servlet:jakarta.servlet-api:6.0.0")
+    
+    // Add NoopTracer
+    implementation("io.opentracing:opentracing-noop:0.33.0")
+}
+
+// For Datadog annotation processing
+tasks.withType(JavaCompile) {
+	options.compilerArgs += ["-Xlint:unchecked", "-Xlint:deprecation"]
 }
 
 kotlin {
 	compilerOptions {
-		freeCompilerArgs.addAll '-Xjsr305=strict'
+		freeCompilerArgs.addAll('-Xjsr305=strict')
 	}
 }
 
@@ -66,4 +103,51 @@ allOpen {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+// Create a task to download the Datadog Java agent
+task downloadDdJavaAgent {
+	doLast {
+		def ddAgent = file("${buildDir}/dd-java-agent.jar")
+		if (!ddAgent.exists()) {
+			println "Downloading Datadog Java agent..."
+			mkdir "${buildDir}"
+			ant.get(src: 'https://dtdg.co/latest-java-tracer', dest: ddAgent, skipexisting: 'true')
+			println "Downloaded Datadog Java agent to ${ddAgent.absolutePath}"
+		} else {
+			println "Datadog Java agent already exists at ${ddAgent.absolutePath}"
+		}
+	}
+}
+
+// Create a task to ensure the agent is available for the Docker build
+task copyDdJavaAgent {
+    doLast {
+        def sourceFile = file("${buildDir}/dd-java-agent.jar")
+        def destFile = file("${projectDir}/dd-java-agent.jar")
+        
+        if (!destFile.exists() && sourceFile.exists()) {
+            println "Copying Datadog Java agent to project directory"
+            try {
+                copy {
+                    from sourceFile
+                    into projectDir
+                }
+                println "Copied Datadog Java agent to project directory"
+            } catch (Exception e) {
+                println "Failed to copy Datadog Java agent: ${e.message}"
+                println "Please copy manually: ${sourceFile} to ${destFile}"
+            }
+        } else {
+            println "Datadog Java agent already exists in project directory or source file not found"
+        }
+    }
+}
+
+// Make the bootJar task depend on copyDdJavaAgent
+bootJar.dependsOn copyDdJavaAgent
+
+// Configure the Spring Boot application
+springBoot {
+	buildInfo()
 }
