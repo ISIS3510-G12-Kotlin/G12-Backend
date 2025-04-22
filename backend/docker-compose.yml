@@ -1,21 +1,42 @@
-version: '3.8'
+version: '3'
 
 services:
+  datadog-agent:
+    image: datadog/agent:latest
+    container_name: datadog-agent
+    environment:
+      - DD_API_KEY=28e9798cd22be6ac8a74602170c152d9
+      - DD_SITE=datadoghq.com
+      - DD_APM_ENABLED=true
+      - DD_APM_NON_LOCAL_TRAFFIC=true
+      - DD_LOGS_ENABLED=true
+      - DD_PROCESS_AGENT_ENABLED=true
+      - DD_TAGS=env:development,service:explorandes-backend
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+      - /opt/datadog-agent/run:/opt/datadog-agent/run:rw
+    ports:
+      - "8126:8126"    # APM
+      - "8125:8125/udp" # StatsD
+    networks:
+      - explorandes-network
+
   postgres:
     image: postgres:15
-    container_name: explorandes-db
+    container_name: explorandes-postgres
     environment:
       POSTGRES_DB: explorandes
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: Ardara123
     ports:
       - "5432:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - explorandes-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
+      interval: 10s
       retries: 5
 
   app:
@@ -27,15 +48,33 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/explorandes
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=Ardara123
-      - SPRING_PROFILES_ACTIVE=init-data
-      - DD_AGENT_HOST=host.docker.internal
+      - DD_AGENT_HOST=datadog-agent
       - DD_AGENT_PORT=8126
-    volumes:
-      - app-uploads:/app/uploads
+      - DD_ENV=development
+      - DD_SERVICE=explorandes-backend
+      - DD_VERSION=1.0.0
+      - DD_TRACE_ENABLED=true
+      - DD_LOGS_INJECTION=true
+      - DD_PROFILING_ENABLED=true
     depends_on:
       postgres:
         condition: service_healthy
+      datadog-agent:
+        condition: service_started
+    labels:
+      com.datadoghq.ad.logs: '[{"source":"java","service":"explorandes-backend"}]'
+    networks:
+      - explorandes-network
 
-volumes:
-  postgres-data:
-  app-uploads:
+    # ensure your Dockerfile copies dd‑java‑agent.jar into the image at /
+    command: >
+      java \
+        -javaagent:/dd-java-agent.jar \
+        -Ddd.agent.host=${DD_AGENT_HOST} \
+        -Ddd.agent.port=${DD_AGENT_PORT} \
+        -jar app.jar
+
+networks:
+  explorandes-network:
+    driver: bridge
+
