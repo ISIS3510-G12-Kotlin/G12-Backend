@@ -27,10 +27,11 @@ COPY --from=build /app/build/libs/*.jar app.jar
 # Create directory for uploads
 RUN mkdir -p uploads/profile-images
 
-# Expose the application port
+# Expose the application port (esto es informativo, no cambia el comportamiento)
 EXPOSE 8080
 
-# Run the application with the init-data profile
+# Run the application with the init-data profile and use PORT environment variable
 ENTRYPOINT ["java", \
             "-Dspring.profiles.active=init-data", \
+            "-Dserver.port=${PORT:8080}", \
             "-jar", "/app/app.jar"]
