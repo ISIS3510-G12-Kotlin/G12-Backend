@@ -16,8 +16,16 @@ This repository contains the source code for the Banckend of the app developed u
 ---
 
 
+
 ```
 G12-Backend
+├─ .idea
+│  ├─ backend_kotlin.iml
+│  ├─ caches
+│  │  └─ deviceStreaming.xml
+│  ├─ misc.xml
+│  ├─ modules.xml
+│  └─ vcs.xml
 ├─ backend
 │  ├─ .gradle
 │  │  ├─ 8.13
@@ -43,6 +51,7 @@ G12-Backend
 │  │     └─ problems
 │  │        └─ problems-report.html
 │  ├─ build.gradle
+│  ├─ dd-java-agent.jar
 │  ├─ docker-compose.yml
 │  ├─ Dockerfile
 │  ├─ gradle
@@ -61,33 +70,39 @@ G12-Backend
 │     │  │           ├─ aspect
 │     │  │           │  └─ DatadogTracingAspect.kt.bak
 │     │  │           ├─ config
-│     │  │           │  ├─ DatadogConfig.kt.bak
-│     │  │           │  └─ StatsDConfig.kt
+│     │  │           │  ├─ DatadogTraceConfig.kt
+│     │  │           │  └─ StatsDConfig.kt.bak
 │     │  │           ├─ controllers
 │     │  │           │  ├─ AuditController.kt
 │     │  │           │  ├─ AuthController.kt
 │     │  │           │  ├─ BuildingController.kt
+│     │  │           │  ├─ EventController.kt
 │     │  │           │  ├─ HelloController.kt
 │     │  │           │  ├─ ImageController.kt
 │     │  │           │  ├─ PlaceController.kt
 │     │  │           │  └─ UserController.kt
 │     │  │           ├─ DemoApplication.kt
+│     │  │           ├─ dto
+│     │  │           │  └─ response
+│     │  │           │     ├─ BuildingDTO.kt
+│     │  │           │     ├─ EventDTO.kt
+│     │  │           │     └─ PlaceDTO.kt
+│     │  │           ├─ mapper
+│     │  │           │  ├─ BuildingMapper.kt
+│     │  │           │  └─ EventMapper.kt
 │     │  │           ├─ model
 │     │  │           │  ├─ AuthRequest.kt
 │     │  │           │  ├─ AuthResponse.kt
 │     │  │           │  ├─ Building.kt
-│     │  │           │  ├─ Campus.kt
-│     │  │           │  ├─ Floor.kt
+│     │  │           │  ├─ Event.kt
+│     │  │           │  ├─ Floor.kt.bak
 │     │  │           │  ├─ Place.kt
-│     │  │           │  ├─ Room.kt
 │     │  │           │  ├─ User.kt
 │     │  │           │  └─ UserFavoriteBuilding.kt
 │     │  │           ├─ repository
 │     │  │           │  ├─ BuildingRepository.kt
-│     │  │           │  ├─ CampusRepository.kt
-│     │  │           │  ├─ FloorRepository.kt
+│     │  │           │  ├─ EventRepository.kt
 │     │  │           │  ├─ PlaceRepository.kt
-│     │  │           │  ├─ RoomRepository.kt
 │     │  │           │  └─ UserRepository.kt
 │     │  │           ├─ security
 │     │  │           │  ├─ JwtFilter.kt
@@ -97,12 +112,18 @@ G12-Backend
 │     │  │           │  ├─ AuthService.kt
 │     │  │           │  ├─ BuildingService.kt
 │     │  │           │  ├─ CustomUserDetailsService.kt
+│     │  │           │  ├─ EventService.kt
 │     │  │           │  ├─ PlaceService.kt
 │     │  │           │  └─ UserService.kt
 │     │  │           └─ util
 │     │  │              └─ DataLoader.kt
 │     │  └─ resources
-│     │     └─ application.properties
+│     │     ├─ application.properties
+│     │     └─ data
+│     │        ├─ combined_data.json
+│     │        ├─ events.json
+│     │        ├─ locations.json
+│     │        └─ places.json
 │     └─ test
 │        └─ kotlin
 │           └─ com
