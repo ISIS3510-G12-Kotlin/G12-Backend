@@ -2,7 +2,7 @@
   {
     "title": "Festival Musical",
     "description": "Concierto de bienvenida en la plazoleta.",
-    "imageUrl": "https://example.com/festival.jpg",
+    "imageUrl": "https://img.chilango.com/2018/02/passport-experience.jpg",
     "type": "event",
     "startTime": "2025-04-30T18:00:00",
     "endTime": "2025-04-30T20:00:00",
@@ -11,10 +11,82 @@
   {
     "title": "Charla sobre IA",
     "description": "Invitado de Google compartiendo experiencias.",
-    "imageUrl": "https://example.com/ai.jpg",
+    "imageUrl": "https://www.bilib.es/fileadmin/media/Ficheros_para_contenidos/Documentos_y_ficheros/Maestros_de_la_IA_Descubre_el_Futuro_en_una_Charla_Interactiva.png",
     "type": "talk",
     "startTime": "2025-04-22T10:00:00",
     "endTime": "2025-04-22T11:00:00",
     "locationId": 2
+  },
+  {
+    "title": "Torneo de Ping Pong",
+    "description": "Competencia abierta para toda la comunidad universitaria.",
+    "imageUrl": "https://www.pingpongplus.com/blog/wp-content/uploads/2017/04/Ping-Pong-torneo.jpg",
+    "type": "sports",
+    "startTime": "2025-05-03T15:00:00",
+    "endTime": "2025-05-03T18:00:00",
+    "locationId": 3
+  },
+  {
+    "title": "Cine al aire libre",
+    "description": "Película sorpresa proyectada en el césped central.",
+    "imageUrl": "https://imagenes.elpais.com/resizer/v2/RH23YIU6VBCQFDFUGG2JZHBHSM.png?auth=a9cadef2ee7bcef8638e9d8533d291e325bbcc7dfbd5c2088674d75f3f0f092f&width=1960&height=1103&smart=true",
+    "type": "movie",
+    "startTime": "2025-05-01T19:30:00",
+    "endTime": "2025-05-01T21:30:00",
+    "locationId": 4
+  },
+  {
+    "title": "Feria de clubes",
+    "description": "Ven y conoce todos los clubes estudiantiles.",
+    "imageUrl": "https://universidadeuropea.com/resources/media/images/clubes_rrss.original.jpg",
+    "type": "event",
+    "startTime": "2025-05-02T09:00:00",
+    "endTime": "2025-05-02T13:00:00",
+    "locationId": 5
+  },
+  {
+    "title": "Conferencia de Ciberseguridad",
+    "description": "Expertos nacionales discuten sobre amenazas modernas.",
+    "imageUrl": "https://www.segurilatam.com/wp-content/uploads/sites/5/2023/11/mauricio-lizcano-conferencia-ciberseguridad-900x600.jpg",
+    "type": "talk",
+    "startTime": "2025-05-06T14:00:00",
+    "endTime": "2025-05-06T17:00:00",
+    "locationId": 6
+  },
+  {
+    "title": "Rally fotográfico",
+    "description": "Explora el campus y captura su esencia en fotos.",
+    "imageUrl": "https://www.cetys.mx/noticias/wp-content/uploads/2016/02/rallyFoto1_gde.jpg",
+    "type": "event",
+    "startTime": "2025-05-05T10:00:00",
+    "endTime": "2025-05-05T13:00:00",
+    "locationId": 7
+  },
+  {
+    "title": "Hackathon Estudiantil",
+    "description": "24 horas para resolver retos reales de tecnología.",
+    "imageUrl": "https://base22.com/wp-content/uploads/2019/08/HackMTY_2018.jpg",
+    "type": "event",
+    "startTime": "2025-05-10T08:00:00",
+    "endTime": "2025-05-11T08:00:00",
+    "locationId": 8
+  },
+  {
+    "title": "Clase abierta de yoga",
+    "description": "Ven en ropa cómoda y conecta con tu cuerpo.",
+    "imageUrl": "https://www.elmamm.org/content/uploads/fly-images/9807/clase-yoga-con-radhi-yoga-1600x700-c.jpg",
+    "type": "sports",
+    "startTime": "2025-05-07T07:00:00",
+    "endTime": "2025-05-07T08:00:00",
+    "locationId": 9
+  },
+  {
+    "title": "Noche de talento",
+    "description": "Estudiantes presentan sus habilidades en música, comedia y más.",
+    "imageUrl": "https://gadparroquialviche.gob.ec/media/gadviche/banner_images/1_5LsOdr6.jpg",
+    "type": "event",
+    "startTime": "2025-05-08T18:00:00",
+    "endTime": "2025-05-08T21:00:00",
+    "locationId": 10
   }
 ]
