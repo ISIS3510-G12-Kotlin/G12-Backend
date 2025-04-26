@@ -4,9 +4,10 @@ services:
   datadog-agent:
     image: datadog/agent:latest
     container_name: datadog-agent
+    network_mode: "host"  # Use host network instead of bridge
     environment:
-      - DD_API_KEY=28e9798cd22be6ac8a74602170c152d9
-      - DD_SITE=datadoghq.com
+      - DD_API_KEY=ddd
+      - DD_SITE=us5.datadoghq.com
       - DD_APM_ENABLED=true
       - DD_APM_NON_LOCAL_TRAFFIC=true
       - DD_LOGS_ENABLED=true
@@ -17,23 +18,15 @@ services:
       - /proc/:/host/proc/:ro
       - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
       - /opt/datadog-agent/run:/opt/datadog-agent/run:rw
-    ports:
-      - "8126:8126"    # APM
-      - "8125:8125/udp" # StatsD
-    networks:
-      - explorandes-network
 
   postgres:
     image: postgres:15
     container_name: explorandes-postgres
+    network_mode: "host"  # Use host network
     environment:
       POSTGRES_DB: explorandes
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: Ardara123
-    ports:
-      - "5432:5432"
-    networks:
-      - explorandes-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -48,7 +41,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/explorandes
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=Ardara123
-      - DD_AGENT_HOST=datadog-agent
+      - DD_AGENT_HOST=localhost
       - DD_AGENT_PORT=8126
       - DD_ENV=development
       - DD_SERVICE=explorandes-backend
@@ -56,15 +49,16 @@ services:
       - DD_TRACE_ENABLED=true
       - DD_LOGS_INJECTION=true
       - DD_PROFILING_ENABLED=true
-    depends_on:
-      postgres:
-        condition: service_healthy
-      datadog-agent:
-        condition: service_started
-    labels:
-      com.datadoghq.ad.logs: '[{"source":"java","service":"explorandes-backend"}]'
+      - DD_SITE=us5.datadoghq.com
+      # This is critical - pass the API key explicitly
+      - MANAGEMENT_DATADOG_METRICS_EXPORT_API_KEY=ddd
     networks:
       - explorandes-network
+    depends_on:
+      - postgres
+      - datadog-agent
+    labels:
+      com.datadoghq.ad.logs: '[{"source":"java","service":"explorandes-backend"}]'
 
     # ensure your Dockerfile copies dd‑java‑agent.jar into the image at /
     command: >

@@ -16,11 +16,14 @@ class EventService(
     private val eventRepository: EventRepository,
     private val buildingRepository: BuildingRepository
 ) {
-    fun getAllEvents(): List<Event> = eventRepository.findAll()
+    fun getAllEvents(): List<Event> = eventRepository.findAllWithLocations()
     
     fun getEventById(id: Long): Event = eventRepository.findById(id)
         .orElseThrow { NoSuchElementException("Event not found with id: $id") }
-    
+        .also { 
+            // Touch the location property to ensure it's loaded within the transaction
+            it.location?.id
+        }
     fun getEventsByType(type: String): List<Event> = eventRepository.findByType(type)
     
     fun getEventsByLocation(locationId: Long): List<Event> = eventRepository.findByLocationId(locationId)
